@@ -1,4 +1,4 @@
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://protomart-travelblog-backend.onrender.com/api';
+export const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://protomart-travelphoto-backend.onrender.com/api';
 
 export const USER_ROLES = {
   USER: 'user',

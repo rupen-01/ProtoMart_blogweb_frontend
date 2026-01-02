@@ -22,7 +22,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'https://protomart-travelblog-backend.onrender.com/api',
+        target: 'https://protomart-travelphoto-backend.onrender.com',
         changeOrigin: true,
       }
     }

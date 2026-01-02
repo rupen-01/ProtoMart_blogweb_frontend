@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://protomart-travelblog-backend.onrender.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://protomart-travelphoto-backend.onrender.com/api';
+
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000,
