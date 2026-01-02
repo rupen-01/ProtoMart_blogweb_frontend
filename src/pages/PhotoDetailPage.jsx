@@ -22,6 +22,7 @@ const PhotoDetailPage = () => {
     try {
       setLoading(true);
       const response = await photosAPI.getPhotoById(id);
+      console.log('Fetched photo:', response.data);
       setPhoto(response.data);
     } catch (error) {
       toast.error('Failed to load photo');
@@ -75,7 +76,7 @@ const PhotoDetailPage = () => {
   }
 
   const isOwner = user && photo.userId._id === user._id;
-  const imageUrl = photo.watermarkedUrl || photo.originalUrl;
+  const imageUrl =  photo.originalUrl || photo.watermarkedUrl;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">

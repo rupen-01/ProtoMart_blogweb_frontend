@@ -62,7 +62,11 @@ export const photosAPI = {
   getPhotos: async (params) => {
     return axiosInstance.get('/photos', { params });
   },
-
+  getPhotosByCoordinates: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    const response = await axiosInstance.get(`/photos?${queryString}`);
+    return response.data;
+  },
   // ✅ Home page photos (approved + latest)
   getHomePhotos: async () => {
     return axiosInstance.get('/photos/home');

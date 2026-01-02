@@ -157,6 +157,8 @@ import BlogEditor from "../components/blogs/BlogEditor";
 import WalletPage from "../pages/WalletPage";
 import AdminDashboardPage from "../pages/AdminDashboardPage";
 import ProfilePage from "../pages/ProfilePage";
+import UploadPhotoPage from '../pages/UploadPhotoPage';
+import MyPhotosPage from '../pages/MyPhotosPage';
 
 const AppRoutes = () => {
   return (
@@ -219,6 +221,22 @@ const AppRoutes = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/upload"
+            element={
+              <ProtectedRoute>
+                <UploadPhotoPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+              path="/my-photos"
+              element={
+                <ProtectedRoute>
+                  <MyPhotosPage />
+                </ProtectedRoute>
+              }
+            />
 
           {/* 404 */}
           <Route path="*" element={<NotFoundPage />} />

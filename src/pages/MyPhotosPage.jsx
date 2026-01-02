@@ -7,9 +7,10 @@ import { useNavigate } from 'react-router-dom';
 const MyPhotosPage = () => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState('all');
-  const { myPhotos, isLoadingMyPhotos } = usePhotos({ 
-    status: filter === 'all' ? undefined : filter 
-  });
+  const { myPhotos, isLoadingMyPhotos } = usePhotos();
+
+
+  console.log('My Photos:', myPhotos);
 
   const filterOptions = [
     { value: 'all', label: 'All Photos', count: myPhotos.length },
@@ -18,6 +19,8 @@ const MyPhotosPage = () => {
     { value: 'rejected', label: 'Rejected', color: 'red' }
   ];
 
+
+  
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
