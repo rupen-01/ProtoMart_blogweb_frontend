@@ -135,7 +135,6 @@
 // };
 
 // export default AppRoutes;
-
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
@@ -159,6 +158,7 @@ import AdminDashboardPage from "../pages/AdminDashboardPage";
 import ProfilePage from "../pages/ProfilePage";
 import UploadPhotoPage from '../pages/UploadPhotoPage';
 import MyPhotosPage from '../pages/MyPhotosPage';
+import GoogleAuthSuccess from '../pages/GoogleAuthSuccess'; // ✅ ADD THIS
 
 const AppRoutes = () => {
   return (
@@ -167,7 +167,7 @@ const AppRoutes = () => {
 
       <main className="flex-1">
         <Routes>
-          {/* Public */}
+          {/* ==================== PUBLIC ROUTES ==================== */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
@@ -176,7 +176,10 @@ const AppRoutes = () => {
           <Route path="/photos/:id" element={<PhotoDetailPage />} />
           <Route path="/blogs" element={<BlogsPage />} />
 
-          {/* Protected */}
+          {/* ✅ GOOGLE AUTH SUCCESS ROUTE - MUST BE PUBLIC */}
+          <Route path="/google-auth-success" element={<GoogleAuthSuccess />} />
+
+          {/* ==================== PROTECTED ROUTES ==================== */}
           <Route
             path="/blogs/write"
             element={
@@ -204,15 +207,6 @@ const AppRoutes = () => {
             }
           />
 
-          {/* Admin */}
-          <Route
-            path="/admin"
-            element={
-              <AdminRoute>
-                <AdminDashboardPage />
-              </AdminRoute>
-            }
-          />
           <Route
             path="/profile"
             element={
@@ -221,6 +215,7 @@ const AppRoutes = () => {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/upload"
             element={
@@ -229,16 +224,27 @@ const AppRoutes = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-              path="/my-photos"
-              element={
-                <ProtectedRoute>
-                  <MyPhotosPage />
-                </ProtectedRoute>
-              }
-            />
 
-          {/* 404 */}
+          <Route
+            path="/my-photos"
+            element={
+              <ProtectedRoute>
+                <MyPhotosPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ==================== ADMIN ROUTES ==================== */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboardPage />
+              </AdminRoute>
+            }
+          />
+
+          {/* ==================== 404 FALLBACK ==================== */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

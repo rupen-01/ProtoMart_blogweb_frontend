@@ -17,7 +17,7 @@ const LoginPage = () => {
       setLoading(true);
       const response = await authAPI.login(data);
       
-      login(response.data.user, response.data.token);
+login(response.data.user, response.data.token);
       toast.success('Login successful!');
       navigate('/');
     } catch (error) {
@@ -26,6 +26,11 @@ const LoginPage = () => {
       setLoading(false);
     }
   };
+  
+  const handleGoogleLogin = () => {
+  window.location.href = "http://localhost:5000/api/auth/google";
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -60,6 +65,15 @@ const LoginPage = () => {
           </div>
 
           <button
+  type="button"
+  onClick={handleGoogleLogin}
+  className="w-full border py-2 rounded-lg mt-4 flex items-center justify-center gap-2 hover:bg-gray-100"
+>
+  <img src="https://developers.google.com/identity/images/g-logo.png" width="20" />
+  Continue with Google
+</button>
+
+          <button
             type="submit"
             disabled={loading}
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
@@ -73,6 +87,7 @@ const LoginPage = () => {
             Forgot Password?
           </Link>
         </div>
+        
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">

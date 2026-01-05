@@ -9,6 +9,8 @@ import Wallet from "./pages/Wallet/Wallet";
 import AdminDashboard from "../src/pages/AdminDashboardPage";
 import Profile from "../src/pages/ProfilePage";
 // import GooglePhotos from "../src/pages/";
+import GoogleAuthSuccess from "../src/pages/GoogleAuthSuccess";
+
 
 /* ================== AUTH GUARDS ================== */
 
@@ -94,6 +96,9 @@ export default function AppRouter() {
         </AdminRoute>
       ),
     },
+
+    { path: "/google-auth-success", 
+      element: <GoogleAuthSuccess /> },
 
     /* ❌ FALLBACK */
     { path: "*", element: <Navigate to="/" replace /> },

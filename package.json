@@ -16,6 +16,7 @@
     "cesium": "^1.136.0",
     "dom": "^0.0.3",
     "framer-motion": "^12.23.26",
+    "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "lucide-react": "^0.562.0",
