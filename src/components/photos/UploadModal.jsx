@@ -4,44 +4,44 @@ import { photosAPI } from '../../api/photos.api';
 import toast from 'react-hot-toast';
 
 const UploadModal = ({ coordinates, onClose }) => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+const [selectedFiles, setSelectedFiles] = useState([]);
+const [previews, setPreviews] = useState([]);
   const [uploading, setUploading] = useState(false);
  // Add safety check
   if (!coordinates) {
     return null;
   }
-  const handleFileSelect = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      setPreview(URL.createObjectURL(file));
-    }
-  };
+const handleFileSelect = (e) => {
+  const files = Array.from(e.target.files);
+  if (files.length > 0) {
+    setSelectedFiles(files);
+    setPreviews(files.map(file => URL.createObjectURL(file)));
+  }
+};
+ const handleUpload = async () => {
+  if (selectedFiles.length === 0) {
+    toast.error('Please select at least one photo');
+    return;
+  }
 
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      toast.error('Please select a photo');
-      return;
-    }
+  try {
+    setUploading(true);
+    const formData = new FormData();
+    selectedFiles.forEach(file => {
+      formData.append('photo', file);
+    });
+    formData.append('latitude', coordinates.latitude);
+    formData.append('longitude', coordinates.longitude);
 
-    try {
-      setUploading(true);
-      const formData = new FormData();
-      formData.append('photo', selectedFile);
-      formData.append('latitude', coordinates.latitude);
-      formData.append('longitude', coordinates.longitude);
-
-      await photosAPI.uploadPhoto(formData);
-      toast.success('Photo uploaded successfully!');
-      onClose();
-    } catch (error) {
-      toast.error('Upload failed: ' + error.message);
-    } finally {
-      setUploading(false);
-    }
-  };
-
+    await photosAPI.uploadPhoto(formData);
+    toast.success(`${selectedFiles.length} photo(s) uploaded successfully!`);
+    onClose();
+  } catch (error) {
+    toast.error('Upload failed: ' + error.message);
+  } finally {
+    setUploading(false);
+  }
+};
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center  z-[9999]">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
@@ -62,19 +62,31 @@ const UploadModal = ({ coordinates, onClose }) => {
 
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Select Photo</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileSelect}
-            className="w-full border rounded p-2"
-          />
+        <input
+  type="file"
+  accept="image/*"
+  multiple
+  onChange={handleFileSelect}
+  className="w-full border rounded p-2"
+/>
         </div>
 
-        {preview && (
-          <div className="mb-4">
-            <img src={preview} alt="Preview" className="w-full h-48 object-cover rounded" />
-          </div>
-        )}
+        
+  {previews.length > 0 && (
+  <div className="mb-4">
+    <p className="text-sm text-gray-600 mb-2">{selectedFiles.length} photo(s) selected</p>
+    <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto">
+      {previews.map((preview, index) => (
+        <img 
+          key={index} 
+          src={preview} 
+          alt={`Preview ${index + 1}`} 
+          className="w-full h-24 object-cover rounded" 
+        />
+      ))}
+    </div>
+  </div>
+)}
         
         <div className="flex space-x-3">
           <button

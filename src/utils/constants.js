@@ -1,4 +1,4 @@
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://protomart-blogweb-backend-6xor.onrender.com/api';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export const USER_ROLES = {
   USER: 'user',

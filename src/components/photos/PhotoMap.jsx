@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
-import { useNavigate } from 'react-router-dom';
-import { placesAPI } from '../../api/places.api';
+import React, { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import { useNavigate } from "react-router-dom";
+import { placesAPI } from "../../api/places.api";
 
 const createIcon = (count) =>
   L.divIcon({
@@ -27,18 +27,15 @@ const PhotoMap = ({ preview = false }) => {
 
   return (
     <MapContainer
-  center={[20.5937, 78.9629]}
-  zoom={preview ? 4 : 5}
-  className="w-full h-full"
-  style={{ minHeight: '600px', zIndex: 0 }}
-  scrollWheelZoom
-  dragging
-  doubleClickZoom
->
-
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+      center={[20.5937, 78.9629]}
+      zoom={preview ? 4 : 5}
+      className="w-full h-full"
+      style={{ minHeight: "600px", zIndex: 0 }}
+      scrollWheelZoom
+      dragging
+      doubleClickZoom
+    >
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
       {places.map((p) => (
         <Marker
