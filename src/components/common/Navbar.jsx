@@ -27,8 +27,8 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/explore" className="text-gray-700 hover:text-blue-600">
-              Explore
+            <Link to="/file-explorer" className="text-gray-700 hover:text-blue-600">
+              File Explorer
             </Link>
             <Link to="/blogs" className="text-gray-700 hover:text-blue-600">
               Blogs

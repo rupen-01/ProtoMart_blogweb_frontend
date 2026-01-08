@@ -2,6 +2,15 @@ import axiosInstance from './axios';
 
 export const placesAPI = {
   // Get all places
+  getPlacesHierarchy: async () => {
+    return axiosInstance.get('/places/hierarchy');
+  },
+  
+  // Get places by country
+  getPlacesByCountry: async (country) => {
+    return axiosInstance.get('/places', { params: { country } });
+  },
+  
   getAllPlaces: async (params) => {
     return axiosInstance.get('/places', { params });
   },

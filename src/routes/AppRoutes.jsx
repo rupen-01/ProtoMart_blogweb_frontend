@@ -148,7 +148,7 @@ import Footer from "../components/common/Footer";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
-// import ExplorePage from "../pages/ExplorePage";
+import ExplorePage from "../pages/ExplorePage";
 import PlaceDetailPage from "../pages/PlaceDetailPage";
 import PhotoDetailPage from "../pages/PhotoDetailPage";
 import BlogsPage from "../pages/BlogsPage";
@@ -171,7 +171,7 @@ const AppRoutes = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          {/* <Route path="/explore" element={<ExplorePage />} /> */}
+          <Route path="/file-explorer" element={<ExplorePage />} />
           <Route path="/places/:id" element={<PlaceDetailPage />} />
           <Route path="/photos/:id" element={<PhotoDetailPage />} />
           <Route path="/blogs" element={<BlogsPage />} />
