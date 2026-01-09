@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { blogsAPI } from '../../api/blogs.api';
-import { placesAPI } from '../../api/places.api';
-import { Save, Eye, ArrowLeft } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { blogsAPI } from "../../api/blogs.api";
+import { placesAPI } from "../../api/places.api";
+import { Save, Eye, ArrowLeft } from "lucide-react";
+import toast from "react-hot-toast";
 
 const BlogEditor = () => {
   const { id } = useParams();
@@ -13,9 +13,15 @@ const BlogEditor = () => {
 
   const [loading, setLoading] = useState(false);
   const [places, setPlaces] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  
-  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm();
 
   useEffect(() => {
     fetchPlaces();
@@ -29,7 +35,7 @@ const BlogEditor = () => {
       const response = await placesAPI.getAllPlaces({ limit: 100 });
       setPlaces(response.data);
     } catch (error) {
-      toast.error('Failed to load places');
+      toast.error("Failed to load places");
     }
   };
 
@@ -37,74 +43,72 @@ const BlogEditor = () => {
     try {
       const response = await blogsAPI.getBlogById(id);
       const blog = response.data;
-      
-      setValue('title', blog.title);
-      setValue('content', blog.content);
-      setValue('placeId', blog.placeId._id);
-      setValue('coverImage', blog.coverImage);
-      setValue('tags', blog.tags?.join(', ') || '');
+
+      setValue("title", blog.title);
+      setValue("content", blog.content);
+      setValue("placeId", blog.placeId._id);
+      setValue("coverImage", blog.coverImage);
+      setValue("tags", blog.tags?.join(", ") || "");
     } catch (error) {
-      toast.error('Failed to load blog');
-      navigate('/blogs');
+      toast.error("Failed to load blog");
+      navigate("/blogs");
     }
   };
 
   const onSubmit = async (data) => {
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const formData = new FormData();
-    formData.append('title', data.title);
-    formData.append('content', data.content);
-    formData.append('placeId', data.placeId);
-    formData.append(
-      'tags',
-      JSON.stringify(
-        data.tags
-          ? data.tags.split(',').map(t => t.trim())
-          : []
-      )
-    );
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("content", data.content);
+      formData.append("placeId", data.placeId);
+      formData.append(
+        "tags",
+        JSON.stringify(
+          data.tags ? data.tags.split(",").map((t) => t.trim()) : []
+        )
+      );
 
-    if (data.coverImages) {
-      Array.from(data.coverImages).forEach(file => {
-        formData.append('coverImages', file);
-      });
+      if (data.coverImages) {
+        Array.from(data.coverImages).forEach((file) => {
+          formData.append("coverImages", file);
+        });
+      }
+
+      if (isEditMode) {
+        await blogsAPI.updateBlog(id, formData);
+        toast.success("Blog updated");
+      } else {
+        await blogsAPI.createBlog(formData);
+        toast.success("Blog created");
+      }
+    } catch (err) {
+      toast.error("Failed to save blog");
+    } finally {
+      setLoading(false);
     }
-
-    if (isEditMode) {
-      await blogsAPI.updateBlog(id, formData);
-      toast.success('Blog updated');
-    } else {
-      await blogsAPI.createBlog(formData);
-      toast.success('Blog created');
-    }
-
-  } catch (err) {
-    toast.error('Failed to save blog');
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handlePublish = async () => {
     if (!id) {
-      toast.error('Please save the blog first');
+      toast.error("Please save the blog first");
       return;
     }
 
     try {
       await blogsAPI.publishBlog(id);
-      toast.success('Blog published successfully');
+      toast.success("Blog published successfully");
       navigate(`/blogs/${id}`);
     } catch (error) {
-      toast.error('Failed to publish blog');
+      toast.error("Failed to publish blog");
     }
   };
 
-  const filteredPlaces = places.filter(place =>
-    place.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    place.city?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredPlaces = places.filter(
+    (place) =>
+      place.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      place.city?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -121,28 +125,38 @@ const BlogEditor = () => {
           </button>
 
           <h1 className="text-3xl font-bold">
-            {isEditMode ? 'Edit Blog' : 'Write New Blog'}
+            {isEditMode ? "Edit Blog" : "Write New Blog"}
           </h1>
 
           <div className="w-20"></div>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg shadow-md p-8">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-white rounded-lg shadow-md p-8"
+        >
           {/* Title */}
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Blog Title *</label>
+            <label className="block text-sm font-medium mb-2">
+              Blog Title *
+            </label>
             <input
               type="text"
-              {...register('title', {
-                required: 'Title is required',
-                minLength: { value: 5, message: 'Title must be at least 5 characters' }
+              {...register("title", {
+                required: "Title is required",
+                minLength: {
+                  value: 5,
+                  message: "Title must be at least 5 characters",
+                },
               })}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="Enter an engaging title..."
             />
             {errors.title && (
-              <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.title.message}
+              </p>
             )}
           </div>
 
@@ -157,7 +171,7 @@ const BlogEditor = () => {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 mb-2"
             />
             <select
-              {...register('placeId', { required: 'Place is required' })}
+              {...register("placeId", { required: "Place is required" })}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select a place</option>
@@ -170,7 +184,9 @@ const BlogEditor = () => {
               ))}
             </select>
             {errors.placeId && (
-              <p className="text-red-500 text-sm mt-1">{errors.placeId.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.placeId.message}
+              </p>
             )}
           </div>
 
@@ -178,43 +194,50 @@ const BlogEditor = () => {
           <div className="mb-6">
             <label className="block text-sm font-medium mb-2">Content *</label>
             <textarea
-              {...register('content', {
-                required: 'Content is required',
-                minLength: { value: 50, message: 'Content must be at least 50 characters' }
+              {...register("content", {
+                required: "Content is required",
+                minLength: {
+                  value: 50,
+                  message: "Content must be at least 50 characters",
+                },
               })}
               rows={15}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-sm"
               placeholder="Write your travel story here... (HTML supported)"
             />
             {errors.content && (
-              <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.content.message}
+              </p>
             )}
             <p className="text-xs text-gray-500 mt-1">
-              You can use HTML tags for formatting (e.g., &lt;p&gt;, &lt;h2&gt;, &lt;strong&gt;, etc.)
+              You can use HTML tags for formatting (e.g., &lt;p&gt;, &lt;h2&gt;,
+              &lt;strong&gt;, etc.)
             </p>
           </div>
 
           {/* Cover Image URL */}
-         <div className="mb-6">
-  <label className="block text-sm font-medium mb-2">
-    Cover Images (Multiple)
-  </label>
-  <input
-    type="file"
-    multiple
-    accept="image/*"
-    onChange={(e) => setValue('coverImages', e.target.files)}
-    className="w-full"
-  />
-</div>
-
+          <div className="mb-6">
+            <label className="block text-sm font-medium mb-2">
+              Cover Images (Multiple)
+            </label>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) => setValue("coverImages", e.target.files)}
+              className="w-full"
+            />
+          </div>
 
           {/* Tags */}
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Tags (Optional)</label>
+            <label className="block text-sm font-medium mb-2">
+              Tags (Optional)
+            </label>
             <input
               type="text"
-              {...register('tags')}
+              {...register("tags")}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="travel, adventure, nature (comma separated)"
             />
@@ -251,7 +274,7 @@ const BlogEditor = () => {
                 className="flex items-center space-x-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
               >
                 <Save className="w-5 h-5" />
-                <span>{loading ? 'Saving...' : 'Save Draft'}</span>
+                <span>{loading ? "Saving..." : "Save Draft"}</span>
               </button>
             </div>
           </div>

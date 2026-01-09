@@ -145,7 +145,7 @@ const BlogCard = ({ blog, user }) => {
       {blog.coverImages?.[0] && (
         <div className="h-48 overflow-hidden bg-gray-200">
           <img
-            src={blog.coverImages[0]}
+            src={blog.coverImages[0].url}
             alt={blog.title}
             className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
           />

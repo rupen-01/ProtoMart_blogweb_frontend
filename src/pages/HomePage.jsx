@@ -325,6 +325,8 @@ useEffect(() => {
     }
   };
 
+  console.log('Homepage stats:', stats);
+
   const features = [
     {
       icon: Upload,
@@ -375,10 +377,10 @@ useEffect(() => {
             
             {/* Stats */}
             <div className="flex justify-center space-x-8 mb-8">
-              <div className="text-center">
+              {/* <div className="text-center">
                 <div className="text-3xl font-bold">{stats.totalPhotos.toLocaleString()}</div>
                 <div className="text-sm text-blue-200">Photos</div>
-              </div>
+              </div> */}
               <div className="text-center">
                 <div className="text-3xl font-bold">{stats.totalPlaces.toLocaleString()}</div>
                 <div className="text-sm text-blue-200">Places</div>
@@ -399,10 +401,10 @@ useEffect(() => {
                     Upload Photo
                   </button>
                   <button
-                    onClick={() => navigate('/explore')}
+                    onClick={() => navigate('/file-explorer')}
                     className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition"
                   >
-                    Explore Map
+                    Explore Photos
                   </button>
                 </>
               ) : (

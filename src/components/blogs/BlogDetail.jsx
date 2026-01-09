@@ -22,6 +22,8 @@ const BlogDetailPage = () => {
     try {
       setLoading(true);
       const response = await blogsAPI.getBlogById(id);
+
+      console.log('Fetched blog:', response.data);
       setBlog(response.data);
     } catch (error) {
       toast.error('Failed to load blog');
@@ -30,6 +32,8 @@ const BlogDetailPage = () => {
       setLoading(false);
     }
   };
+
+
 
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete this blog?')) {
@@ -73,21 +77,14 @@ const BlogDetailPage = () => {
       </div>
 
       {/* Cover Image */}
-      {blog.coverImage && (
-        <div className="h-96 overflow-hidden bg-gray-200">
-          <img
-            src={blog.coverImage}
-            alt={blog.title}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
+      
 
       {/* Blog Content */}
       <div className="max-w-4xl mx-auto px-4 py-8">
         <article className="bg-white rounded-lg shadow-md p-8">
           {/* Header */}
           <div className="mb-6">
+            
             <h1 className="text-4xl font-bold mb-4">{blog.title}</h1>
 
             {/* Meta Info */}
@@ -172,6 +169,21 @@ const BlogDetailPage = () => {
           </div>
 
           {/* Blog Content */}
+
+          {blog.coverImages && (
+        blog.coverImages.map((imgUrl, index) => (
+          <div
+            key={index}
+            className="w-full h-64 md:h-96 bg-gray-200 overflow-hidden mb-4"
+          >
+            <img
+              src={imgUrl.url}
+              alt={`Cover ${index + 1}`}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ))
+      )}
           <div
             className="prose prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: blog.content }}
