@@ -6,6 +6,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import PhotoGrid from '../components/photos/PhotoGrid';
 import toast from 'react-hot-toast';
 
+
 const PlaceDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -14,10 +15,12 @@ const PlaceDetailPage = () => {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [photosLoading, setPhotosLoading] = useState(true);
-
+const [blogs, setBlogs] = useState([]);
+const [blogsLoading, setBlogsLoading] = useState(true);
   useEffect(() => {
     fetchPlace();
     fetchPlacePhotos();
+    fetchPlaceBlogs();
   }, [id]);
 
   const fetchPlace = async () => {
@@ -32,7 +35,11 @@ const PlaceDetailPage = () => {
       setLoading(false);
     }
   };
+const handleBlogClick = (blogId) => {
+  navigate(`/blogs/${blogId}`);
+};
 
+  
   const fetchPlacePhotos = async () => {
     try {
       setPhotosLoading(true);
@@ -44,7 +51,17 @@ const PlaceDetailPage = () => {
       setPhotosLoading(false);
     }
   };
-
+const fetchPlaceBlogs = async () => {
+  try {
+    setBlogsLoading(true);
+    const response = await placesAPI.getPlaceBlogs(id, { page: 1, limit: 10 });
+    setBlogs(response.data);
+  } catch (error) {
+    toast.error('Failed to load blogs');
+  } finally {
+    setBlogsLoading(false);
+  }
+};
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -137,6 +154,42 @@ const PlaceDetailPage = () => {
         <h2 className="text-2xl font-bold mb-6">Photos from {place.name}</h2>
         <PhotoGrid photos={photos} loading={photosLoading} />
       </div>
+      {/* Blogs Section */}
+<div className="max-w-7xl mx-auto px-4 pb-12">
+  <h2 className="text-2xl font-bold mb-6">Blogs about {place.name}</h2>
+  
+  {blogsLoading ? (
+    <div className="text-center py-8">Loading blogs...</div>
+  ) : blogs.length > 0 ? (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {blogs.map(blog => (
+        <div 
+  key={blog._id} 
+  className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+  onClick={() => handleBlogClick(blog._id)}
+>
+  {blog.coverImages?.[0] && (
+    <img 
+      src={blog.coverImages[0].url} 
+      alt={blog.title}
+      className="w-full h-48 object-cover"
+    />
+  )}
+  <div className="p-4">
+    <h3 className="font-semibold text-lg mb-2">{blog.title}</h3>
+    <p className="text-gray-600 text-sm line-clamp-3">{blog.content}</p>
+    <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
+      <span>{blog.views} views</span>
+      <span>{blog.likes} likes</span>
+    </div>
+  </div>
+</div>
+      ))}
+    </div>
+  ) : (
+    <p className="text-gray-500 text-center py-8">No blogs yet for this place</p>
+  )}
+</div>
     </div>
   );
 };

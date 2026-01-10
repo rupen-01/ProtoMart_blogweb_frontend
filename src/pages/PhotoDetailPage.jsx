@@ -1,16 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { photosAPI } from '../api/photos.api';
-import { MapPin, Calendar, Camera, Eye, Heart, Trash2, ArrowLeft } from 'lucide-react';
-import { format } from 'date-fns';
-import toast from 'react-hot-toast';
-import useAuthStore from '../store/authStore';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { photosAPI } from "../api/photos.api";
+import {
+  MapPin,
+  Calendar,
+  Camera,
+  Eye,
+  Heart,
+  Trash2,
+  ArrowLeft,
+} from "lucide-react";
+import { format } from "date-fns";
+import toast from "react-hot-toast";
+import useAuthStore from "../store/authStore";
 
 const PhotoDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  
+
   const [photo, setPhoto] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -22,10 +30,10 @@ const PhotoDetailPage = () => {
     try {
       setLoading(true);
       const response = await photosAPI.getPhotoById(id);
-      console.log('Fetched photo:', response.data);
+      console.log("Fetched photo:", response.data);
       setPhoto(response.data);
     } catch (error) {
-      toast.error('Failed to load photo');
+      toast.error("Failed to load photo");
       navigate(-1);
     } finally {
       setLoading(false);
@@ -35,27 +43,27 @@ const PhotoDetailPage = () => {
   const handleLike = async () => {
     try {
       await photosAPI.likePhoto(id);
-      setPhoto(prev => ({
+      setPhoto((prev) => ({
         ...prev,
-        likes: (prev.likes || 0) + 1
+        likes: (prev.likes || 0) + 1,
       }));
-      toast.success('Photo liked!');
+      toast.success("Photo liked!");
     } catch (error) {
-      toast.error('Failed to like photo');
+      toast.error("Failed to like photo");
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this photo?')) {
+    if (!window.confirm("Are you sure you want to delete this photo?")) {
       return;
     }
 
     try {
       await photosAPI.deletePhoto(id);
-      toast.success('Photo deleted successfully');
-      navigate('/my-photos');
+      toast.success("Photo deleted successfully");
+      navigate("/my-photos");
     } catch (error) {
-      toast.error('Failed to delete photo');
+      toast.error("Failed to delete photo");
     }
   };
 
@@ -76,7 +84,7 @@ const PhotoDetailPage = () => {
   }
 
   const isOwner = user && photo.userId._id === user._id;
-  const imageUrl =  photo.originalUrl || photo.watermarkedUrl;
+  const imageUrl = photo.originalUrl || photo.watermarkedUrl;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -92,12 +100,19 @@ const PhotoDetailPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Photo */}
         <div className="lg:col-span-2">
-          <img
-            src={imageUrl}
-            alt={photo.placeName || 'Travel photo'}
-            className="w-full h-auto rounded-lg shadow-lg"
-          />
-          
+          <a
+            href={photo.originalUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
+          >
+            <img
+              src={imageUrl}
+              alt={photo.placeName || "Travel photo"}
+              className="w-full h-auto rounded-lg shadow-lg cursor-pointer hover:opacity-95 transition"
+            />
+          </a>
+
           {/* Actions */}
           <div className="flex items-center justify-between mt-4">
             <div className="flex items-center space-x-4">
@@ -133,7 +148,7 @@ const PhotoDetailPage = () => {
             <h3 className="text-lg font-semibold mb-4">Uploaded by</h3>
             <div className="flex items-center">
               <img
-                src={photo.userId.profilePhoto || '/default-avatar.png'}
+                src={photo.userId.profilePhoto || "/default-avatar.png"}
                 alt={photo.userId.name}
                 className="w-12 h-12 rounded-full mr-3"
               />
@@ -153,9 +168,15 @@ const PhotoDetailPage = () => {
                   <MapPin className="w-5 h-5 text-blue-500 mr-2 mt-0.5" />
                   <div>
                     <p className="font-medium">{photo.placeName}</p>
-                    {photo.city && <p className="text-sm text-gray-600">{photo.city}</p>}
-                    {photo.state && <p className="text-sm text-gray-600">{photo.state}</p>}
-                    {photo.country && <p className="text-sm text-gray-600">{photo.country}</p>}
+                    {photo.city && (
+                      <p className="text-sm text-gray-600">{photo.city}</p>
+                    )}
+                    {photo.state && (
+                      <p className="text-sm text-gray-600">{photo.state}</p>
+                    )}
+                    {photo.country && (
+                      <p className="text-sm text-gray-600">{photo.country}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -169,7 +190,7 @@ const PhotoDetailPage = () => {
               <div className="flex items-center text-gray-600">
                 <Calendar className="w-5 h-5 mr-2" />
                 <span className="text-sm">
-                  Uploaded {format(new Date(photo.createdAt), 'PPP')}
+                  Uploaded {format(new Date(photo.createdAt), "PPP")}
                 </span>
               </div>
 
@@ -196,14 +217,15 @@ const PhotoDetailPage = () => {
                 <span className="font-medium">Status: </span>
                 <span
                   className={`px-2 py-1 rounded text-xs ${
-                    photo.approvalStatus === 'approved'
-                      ? 'bg-green-100 text-green-700'
-                      : photo.approvalStatus === 'pending'
-                      ? 'bg-yellow-100 text-yellow-700'
-                      : 'bg-red-100 text-red-700'
+                    photo.approvalStatus === "approved"
+                      ? "bg-green-100 text-green-700"
+                      : photo.approvalStatus === "pending"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-red-100 text-red-700"
                   }`}
                 >
-                  {photo.approvalStatus.charAt(0).toUpperCase() + photo.approvalStatus.slice(1)}
+                  {photo.approvalStatus.charAt(0).toUpperCase() +
+                    photo.approvalStatus.slice(1)}
                 </span>
               </div>
 

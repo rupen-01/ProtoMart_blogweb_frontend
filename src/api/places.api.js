@@ -5,6 +5,10 @@ export const placesAPI = {
   getPlacesHierarchy: async () => {
     return axiosInstance.get('/places/hierarchy');
   },
+
+  getPlaceBlogs: async (id, params) => {
+  return axiosInstance.get(`/places/${id}/blogs`, { params });
+},
   
   // Get places by country
   getPlacesByCountry: async (country) => {
