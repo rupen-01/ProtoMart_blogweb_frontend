@@ -39,7 +39,7 @@ const PendingPhotos = () => {
   const handleApprove = async (photoId) => {
     try {
       await adminAPI.approvePhoto(photoId);
-toast.success(`Photo approved! ₹${photo.rewardAmount || 'X'} credited.`);
+      toast.success(`Photo approved! `);
       
       // Remove from list
       setPhotos(prev => prev.filter(p => p._id !== photoId));
