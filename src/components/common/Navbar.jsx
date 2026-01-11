@@ -33,6 +33,15 @@ const Navbar = () => {
     }
   };
 
+  const handleBlogsClick = () => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+    else {
+      navigate('/blogs');
+    }
+  };
+  
   return (
     <nav className="bg-white shadow-md sticky top-0 z-[9999]">
       <div className="max-w-7xl mx-auto px-4">
@@ -54,12 +63,12 @@ const Navbar = () => {
               File Explorer
             </Link>
 
-            <Link
-              to="/blogs"
+            <button
+              onClick={handleBlogsClick}
               className="text-gray-700 hover:text-blue-600"
             >
               Blogs
-            </Link>
+            </button>
 
             {/* ✅ Upload (Login check) */}
             <button
