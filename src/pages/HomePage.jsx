@@ -208,7 +208,7 @@ const fetchApprovedPhotos = async () => {
 
       <MapClickHandler onMapClick={onLocationSelect} />
       <LocationButton />
-
+ <FullscreenButton /> 
       {/* Show loading indicator */}
       {loading && (
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-lg shadow-lg z-[1000]">
@@ -584,6 +584,73 @@ useEffect(() => {
   );
 };
 
+const FullscreenButton = () => {
+  const map = useMap();
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
+  const toggleFullscreen = (e) => {
+    e.stopPropagation();
+    
+    const mapContainer = map.getContainer().parentElement;
+    
+    if (!isFullscreen) {
+      if (mapContainer.requestFullscreen) {
+        mapContainer.requestFullscreen();
+      } else if (mapContainer.webkitRequestFullscreen) {
+        mapContainer.webkitRequestFullscreen();
+      } else if (mapContainer.mozRequestFullScreen) {
+        mapContainer.mozRequestFullScreen();
+      } else if (mapContainer.msRequestFullscreen) {
+        mapContainer.msRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
+  }, []);
+
+  return (
+    <button
+      onClick={toggleFullscreen}
+      className="absolute top-16 right-4 bg-white p-3 rounded-lg shadow-lg z-[1000] hover:bg-gray-50 transition"
+      title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+    >
+      {isFullscreen ? (
+        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      ) : (
+        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+        </svg>
+      )}
+    </button>
+  );
+};
 
 export default HomePage;
