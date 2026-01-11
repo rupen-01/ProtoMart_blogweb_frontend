@@ -6,6 +6,11 @@ export const authAPI = {
     return axiosInstance.post('/auth/register', data);
   },
 
+  getAllUsers: async () => {
+  const response = await axiosInstance.get('/auth/getAllUsers');
+  return response;
+},
+
   // Login
   login: async (credentials) => {
     return axiosInstance.post('/auth/login', credentials);
