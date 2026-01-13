@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import useAuthStore from '../../store/authStore';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import useAuthStore from "../../store/authStore";
 import {
   Menu,
   X,
@@ -9,8 +9,8 @@ import {
   Upload,
   LogOut,
   Settings,
-  Image
-} from 'lucide-react';
+  Image,
+} from "lucide-react";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -20,28 +20,27 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
     setUserMenuOpen(false);
   };
 
   // ✅ Upload button handler
   const handleUploadClick = () => {
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate("/login");
     } else {
-      navigate('/upload');
+      navigate("/upload");
     }
   };
 
   const handleBlogsClick = () => {
     if (!isAuthenticated) {
-      navigate('/login');
-    }
-    else {
-      navigate('/blogs');
+      navigate("/login");
+    } else {
+      navigate("/blogs");
     }
   };
-  
+
   return (
     <nav className="bg-white shadow-md sticky top-0 z-[9999]">
       <div className="max-w-7xl mx-auto px-4">
@@ -49,9 +48,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <Image className="w-8 h-8 text-blue-600" />
-            <span className="text-xl font-bold text-gray-900">
-              Travel Photos
-            </span>
+            <span className="text-xl font-bold text-gray-900">LOGO</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -137,8 +134,8 @@ const Navbar = () => {
                           <span>Wallet</span>
                         </Link>
 
-                        {(user?.role === 'admin' ||
-                          user?.role === 'superadmin') && (
+                        {(user?.role === "admin" ||
+                          user?.role === "superadmin") && (
                           <Link
                             to="/admin"
                             onClick={() => setUserMenuOpen(false)}
@@ -211,15 +208,17 @@ const Navbar = () => {
                   <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
                     Profile
                   </Link>
-                  <Link to="/my-photos" onClick={() => setMobileMenuOpen(false)}>
+                  <Link
+                    to="/my-photos"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     My Photos
                   </Link>
                   <Link to="/wallet" onClick={() => setMobileMenuOpen(false)}>
                     Wallet
                   </Link>
 
-                  {(user?.role === 'admin' ||
-                    user?.role === 'superadmin') && (
+                  {(user?.role === "admin" || user?.role === "superadmin") && (
                     <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
                       Admin Dashboard
                     </Link>

@@ -121,7 +121,7 @@ const BlogDetailPage = () => {
               {isAuthor && (
                 <div className="flex items-center space-x-2">
                   <button
-                    onClick={() => navigate(`/blogs/${blog._id}/edit`)}
+                    onClick={() => navigate(`/blogs/edit/${blog._id}`)}
                     className="flex items-center space-x-1 text-blue-600 hover:text-blue-700"
                   >
                     <Edit className="w-4 h-4" />

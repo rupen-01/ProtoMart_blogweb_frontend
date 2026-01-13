@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { blogsAPI } from "../../api/blogs.api";
 import { placesAPI } from "../../api/places.api";
-import { Save, Eye, ArrowLeft } from "lucide-react";
+import { Save, Eye, ArrowLeft, MapPin } from "lucide-react";
 import toast from "react-hot-toast";
 
 const BlogEditor = () => {
@@ -14,7 +14,10 @@ const BlogEditor = () => {
   const [loading, setLoading] = useState(false);
   const [places, setPlaces] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [returnPath, setReturnPath] = useState(null);
+  const location = useLocation();
+  const preselectedPlace = location.state?.place;
   const {
     register,
     handleSubmit,
@@ -27,8 +30,12 @@ const BlogEditor = () => {
     fetchPlaces();
     if (isEditMode) {
       fetchBlog();
+    } else if (preselectedPlace) {
+      setValue("placeId", preselectedPlace._id);
+      setSelectedPlace(preselectedPlace);
+      setReturnPath(`/places/${preselectedPlace._id}`);
     }
-  }, [id]);
+  }, [id, preselectedPlace]);
 
   const fetchPlaces = async () => {
     try {
@@ -83,6 +90,13 @@ const BlogEditor = () => {
         await blogsAPI.createBlog(formData);
         toast.success("Blog created");
       }
+
+      // ADD THIS: Redirect back to place detail page or default
+      if (returnPath) {
+        navigate(returnPath);
+      } else {
+        navigate("/blogs");
+      }
     } catch (err) {
       toast.error("Failed to save blog");
     } finally {
@@ -131,6 +145,29 @@ const BlogEditor = () => {
           <div className="w-20"></div>
         </div>
 
+        {selectedPlace && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="font-semibold text-lg text-gray-900">
+                  {selectedPlace.name}
+                </h3>
+                <div className="flex items-center text-gray-600 mt-1">
+                  <MapPin className="w-4 h-4 mr-1" />
+                  <span className="text-sm">
+                    {selectedPlace.city && `${selectedPlace.city}, `}
+                    {selectedPlace.state && `${selectedPlace.state}, `}
+                    {selectedPlace.country}
+                  </span>
+                </div>
+              </div>
+              <span className="text-sm text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
+                Writing about this place
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -161,34 +198,36 @@ const BlogEditor = () => {
           </div>
 
           {/* Place Selection */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Place *</label>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search places..."
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 mb-2"
-            />
-            <select
-              {...register("placeId", { required: "Place is required" })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select a place</option>
-              {filteredPlaces.map((place) => (
-                <option key={place._id} value={place._id}>
-                  {place.name}
-                  {place.city && `, ${place.city}`}
-                  {place.country && `, ${place.country}`}
-                </option>
-              ))}
-            </select>
-            {errors.placeId && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.placeId.message}
-              </p>
-            )}
-          </div>
+          {!preselectedPlace && (
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-2">Place *</label>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search places..."
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 mb-2"
+              />
+              <select
+                {...register("placeId", { required: "Place is required" })}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select a place</option>
+                {filteredPlaces.map((place) => (
+                  <option key={place._id} value={place._id}>
+                    {place.name}
+                    {place.city && `, ${place.city}`}
+                    {place.country && `, ${place.country}`}
+                  </option>
+                ))}
+              </select>
+              {errors.placeId && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.placeId.message}
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Content */}
           <div className="mb-6">

@@ -5,10 +5,12 @@ import AdminRoute from "./AdminRoute";
 
 // Layout
 import Navbar from "../components/common/Navbar";
+import Navbar2 from "../components/common/Navbar2";
 import Footer from "../components/common/Footer";
 
 // Pages
 import HomePage from "../pages/HomePage";
+import HomePageUpdate from "../pages/HomePageUpdate";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import ExplorePage from "../pages/ExplorePage";
@@ -27,12 +29,12 @@ import BlogDetailPage from "../components/blogs/BlogDetail";
 const AppRoutes = () => {
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar2 className="mb-10" />
 
-      <main className="flex-1">
+      <main className="flex-1 pt-20">
         <Routes>
           {/* ==================== PUBLIC ROUTES ==================== */}
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<HomePageUpdate />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/file-explorer" element={<ExplorePage />} />
