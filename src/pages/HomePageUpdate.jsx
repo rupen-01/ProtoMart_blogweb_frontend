@@ -688,7 +688,7 @@ const HomePage = () => {
               <div className="space-y-4">
                 {[
                   { icon: Award, text: 'Instant approval system', color: 'blue' },
-                  { icon: Wallet, text: 'Multiple payout options', color: 'purple' },
+                //   { icon: Wallet, text: 'Multiple payout options', color: 'purple' },
                   { icon: TrendingUp, text: 'Earn more with quality', color: 'green' }
                 ].map((benefit, i) => (
                   <div key={i} className="flex items-center gap-4 bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:border-white/20 transition-all group">
