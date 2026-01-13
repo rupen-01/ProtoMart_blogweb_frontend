@@ -599,10 +599,10 @@ const HomePage = () => {
                 onLocationSelect={handleLocationSelect}
               />
               
-              <div className="absolute top-6 left-6 bg-black/60 backdrop-blur-md rounded-2xl p-4 border border-white/10 z-[999]">
+              <div className="absolute top-6 left-6 bg-black/60 backdrop-blur-md rounded-2xl p-2 border border-white/10 z-[999]">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                    <Navigation className="w-5 h-5" />
+                    <Navigation className="w-5 h-4" />
                   </div>
                   <div>
                     <div className="font-bold text-sm text-white">Interactive Map</div>
