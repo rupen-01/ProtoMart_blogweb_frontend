@@ -1,233 +1,18 @@
-// import React, { useEffect, useState } from 'react';
-// import { adminAPI } from '../../api/admin.api';
-// import { Save, RefreshCw } from 'lucide-react';
-// import toast from 'react-hot-toast';
-
-// const WatermarkSettings = () => {
-//   const [settings, setSettings] = useState({
-//     text: '',
-//     fontSize: 24,
-//     color: '#FFFFFF',
-//     position: { x: 50, y: 90 },
-//     opacity: 0.7
-//   });
-//   const [loading, setLoading] = useState(true);
-//   const [saving, setSaving] = useState(false);
-
-//   useEffect(() => {
-//     fetchSettings();
-//   }, []);
-
-//   const fetchSettings = async () => {
-//     try {
-//       setLoading(true);
-//       const response = await adminAPI.getWatermarkSettings();
-//       setSettings({
-//         text: response.data.text,
-//         fontSize: response.data.fontSize,
-//         color: response.data.color,
-//         position: response.data.position,
-//         opacity: response.data.opacity
-//       });
-//     } catch (error) {
-//       toast.error('Failed to load watermark settings');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleSave = async () => {
-//     try {
-//       setSaving(true);
-//       await adminAPI.updateWatermarkSettings(settings);
-//       toast.success('Watermark settings updated successfully');
-//     } catch (error) {
-//       toast.error('Failed to update watermark settings');
-//     } finally {
-//       setSaving(false);
-//     }
-//   };
-
-//   if (loading) {
-//     return (
-//       <div className="bg-white rounded-lg shadow-md p-6">
-//         <div className="animate-pulse space-y-4">
-//           <div className="h-10 bg-gray-200 rounded" />
-//           <div className="h-10 bg-gray-200 rounded" />
-//           <div className="h-10 bg-gray-200 rounded" />
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="bg-white rounded-lg shadow-md p-6">
-//       <div className="flex items-center justify-between mb-6">
-//         <h2 className="text-2xl font-bold">Watermark Settings</h2>
-//         <button
-//           onClick={fetchSettings}
-//           className="text-blue-600 hover:text-blue-700"
-//         >
-//           <RefreshCw className="w-5 h-5" />
-//         </button>
-//       </div>
-
-//       <div className="space-y-6">
-//         {/* Watermark Text */}
-//         <div>
-//           <label className="block text-sm font-medium mb-2">Watermark Text</label>
-//           <input
-//             type="text"
-//             value={settings.text}
-//             onChange={(e) => setSettings({ ...settings, text: e.target.value })}
-//             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-//             placeholder="© BodyCureHealth Travel"
-//           />
-//         </div>
-
-//         {/* Font Size */}
-//         <div>
-//           <label className="block text-sm font-medium mb-2">
-//             Font Size: {settings.fontSize}px
-//           </label>
-//           <input
-//             type="range"
-//             min="10"
-//             max="100"
-//             value={settings.fontSize}
-//             onChange={(e) => setSettings({ ...settings, fontSize: parseInt(e.target.value) })}
-//             className="w-full"
-//           />
-//         </div>
-
-//         {/* Color */}
-//         <div>
-//           <label className="block text-sm font-medium mb-2">Color</label>
-//           <div className="flex items-center space-x-4">
-//             <input
-//               type="color"
-//               value={settings.color}
-//               onChange={(e) => setSettings({ ...settings, color: e.target.value })}
-//               className="h-10 w-20 rounded cursor-pointer"
-//             />
-//             <input
-//               type="text"
-//               value={settings.color}
-//               onChange={(e) => setSettings({ ...settings, color: e.target.value })}
-//               className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-//               placeholder="#FFFFFF"
-//             />
-//           </div>
-//         </div>
-
-//         {/* Position */}
-//         <div>
-//           <label className="block text-sm font-medium mb-2">
-//             Position (X: {settings.position.x}%, Y: {settings.position.y}%)
-//           </label>
-//           <div className="grid grid-cols-2 gap-4">
-//             <div>
-//               <label className="block text-xs text-gray-600 mb-1">Horizontal (X)</label>
-//               <input
-//                 type="range"
-//                 min="0"
-//                 max="100"
-//                 value={settings.position.x}
-//                 onChange={(e) => setSettings({
-//                   ...settings,
-//                   position: { ...settings.position, x: parseInt(e.target.value) }
-//                 })}
-//                 className="w-full"
-//               />
-//             </div>
-//             <div>
-//               <label className="block text-xs text-gray-600 mb-1">Vertical (Y)</label>
-//               <input
-//                 type="range"
-//                 min="0"
-//                 max="100"
-//                 value={settings.position.y}
-//                 onChange={(e) => setSettings({
-//                   ...settings,
-//                   position: { ...settings.position, y: parseInt(e.target.value) }
-//                 })}
-//                 className="w-full"
-//               />
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Opacity */}
-//         <div>
-//           <label className="block text-sm font-medium mb-2">
-//             Opacity: {(settings.opacity * 100).toFixed(0)}%
-//           </label>
-//           <input
-//             type="range"
-//             min="0"
-//             max="1"
-//             step="0.1"
-//             value={settings.opacity}
-//             onChange={(e) => setSettings({ ...settings, opacity: parseFloat(e.target.value) })}
-//             className="w-full"
-//           />
-//         </div>
-
-//         {/* Preview */}
-//         <div>
-//           <label className="block text-sm font-medium mb-2">Preview</label>
-//           <div className="bg-gray-100 rounded-lg p-8 relative h-64 flex items-center justify-center">
-//             <div className="text-gray-400 text-center">
-//               <p className="text-sm mb-2">Sample Photo Background</p>
-//               <p className="text-xs">Watermark preview would appear here</p>
-//             </div>
-//             <div
-//               className="absolute"
-//               style={{
-//                 left: `${settings.position.x}%`,
-//                 top: `${settings.position.y}%`,
-//                 transform: 'translate(-50%, -50%)',
-//                 fontSize: `${settings.fontSize}px`,
-//                 color: settings.color,
-//                 opacity: settings.opacity,
-//                 fontWeight: 'bold',
-//                 textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
-//               }}
-//             >
-//               {settings.text || 'Sample Text'}
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Save Button */}
-//         <button
-//           onClick={handleSave}
-//           disabled={saving}
-//           className="w-full flex items-center justify-center space-x-2 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-//         >
-//           <Save className="w-5 h-5" />
-//           <span>{saving ? 'Saving...' : 'Save Settings'}</span>
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default WatermarkSettings;
-import React, { useEffect, useState } from 'react';
-import { adminAPI } from '../../api/admin.api';
-import { Save, RefreshCw, Upload, X } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React, { useEffect, useState } from "react";
+import { adminAPI } from "../../api/admin.api";
+import { Save, RefreshCw, Upload, X } from "lucide-react";
+import toast from "react-hot-toast";
 
 const WatermarkSettings = () => {
   const [settings, setSettings] = useState({
-    type: 'text',
-    text: '',
-    fontFamily: 'Arial', // ✅ Added fontFamily
+    type: "text",
+    text: "",
+    fontFamily: "Arial", // ✅ Added fontFamily
     fontSize: 24,
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     position: { x: 50, y: 90 },
-    opacity: 0.7
+    opacity: 0.7,
+    watermarkImage: null, // ✅ To hold existing image URL
   });
 
   const [watermarkImage, setWatermarkImage] = useState(null);
@@ -237,20 +22,20 @@ const WatermarkSettings = () => {
 
   // ✅ Popular fonts list
   const fontFamilies = [
-    { value: 'Arial', label: 'Arial' },
-    { value: 'Helvetica', label: 'Helvetica' },
-    { value: 'Times New Roman', label: 'Times New Roman' },
-    { value: 'Georgia', label: 'Georgia' },
-    { value: 'Courier New', label: 'Courier New' },
-    { value: 'Verdana', label: 'Verdana' },
-    { value: 'Trebuchet MS', label: 'Trebuchet MS' },
-    { value: 'Impact', label: 'Impact' },
-    { value: 'Comic Sans MS', label: 'Comic Sans MS' },
-    { value: 'Palatino', label: 'Palatino' },
-    { value: 'Garamond', label: 'Garamond' },
-    { value: 'Bookman', label: 'Bookman' },
-    { value: 'Tahoma', label: 'Tahoma' },
-    { value: 'Lucida Console', label: 'Lucida Console' }
+    { value: "Arial", label: "Arial" },
+    { value: "Helvetica", label: "Helvetica" },
+    { value: "Times New Roman", label: "Times New Roman" },
+    { value: "Georgia", label: "Georgia" },
+    { value: "Courier New", label: "Courier New" },
+    { value: "Verdana", label: "Verdana" },
+    { value: "Trebuchet MS", label: "Trebuchet MS" },
+    { value: "Impact", label: "Impact" },
+    { value: "Comic Sans MS", label: "Comic Sans MS" },
+    { value: "Palatino", label: "Palatino" },
+    { value: "Garamond", label: "Garamond" },
+    { value: "Bookman", label: "Bookman" },
+    { value: "Tahoma", label: "Tahoma" },
+    { value: "Lucida Console", label: "Lucida Console" },
   ];
 
   useEffect(() => {
@@ -263,85 +48,104 @@ const WatermarkSettings = () => {
       const res = await adminAPI.getWatermarkSettings();
 
       setSettings({
-        type: res.data.type || 'text',
-        text: res.data.text || '',
-        fontFamily: res.data.fontFamily || 'Arial', // ✅ Get fontFamily
+        type: res.data.type || "text",
+        text: res.data.text || "",
+        fontFamily: res.data.fontFamily || "Arial",
         fontSize: res.data.fontSize || 24,
-        color: res.data.color || '#FFFFFF',
+        color: res.data.color || "#FFFFFF",
         position: res.data.position || { x: 50, y: 90 },
-        opacity: res.data.opacity ?? 0.7
+        opacity: res.data.opacity ?? 0.7,
       });
 
-      if (res.data.type === 'image' && res.data.watermarkImageUrl) {
+      // ✅ Load existing image URL regardless of current type
+      if (res.data.watermarkImageUrl) {
         setExistingImageUrl(res.data.watermarkImageUrl);
+      } else {
+        setExistingImageUrl(null); // Clear if no image
       }
-
     } catch (error) {
-      toast.error('Failed to load watermark settings');
+      toast.error("Failed to load watermark settings");
     } finally {
       setLoading(false);
     }
   };
-
   const handleSave = async () => {
     try {
-      if (settings.type === 'image' && !watermarkImage && !existingImageUrl) {
-        toast.error('Please select a watermark image');
+      if (settings.type === "image" && !watermarkImage && !existingImageUrl) {
+        toast.error("Please upload a watermark image first");
+        return;
+      }
+
+      if (settings.type === "text" && !settings.text?.trim()) {
+        toast.error("Please enter watermark text");
         return;
       }
 
       setSaving(true);
 
       const formData = new FormData();
-      formData.append('type', settings.type);
-      formData.append('position', JSON.stringify(settings.position));
-      formData.append('opacity', settings.opacity.toString());
+      formData.append("type", settings.type);
+      formData.append("position", JSON.stringify(settings.position));
+      formData.append("opacity", settings.opacity.toString());
+      formData.append("text", settings.text || "© BodyCureHealth Travel");
+      formData.append("fontFamily", settings.fontFamily || "Arial");
+      formData.append("fontSize", settings.fontSize.toString());
+      formData.append("color", settings.color);
 
-      if (settings.type === 'text') {
-        formData.append('text', settings.text || '');
-        formData.append('fontFamily', settings.fontFamily); // ✅ Send fontFamily
-        formData.append('fontSize', settings.fontSize.toString());
-        formData.append('color', settings.color);
-      } else if (settings.type === 'image') {
-        if (watermarkImage instanceof File) {
-          formData.append('watermarkImage', watermarkImage);
-        }
+      if (watermarkImage) {
+        formData.append("watermarkImage", watermarkImage);
+        console.log("Appending file to FormData:", watermarkImage.name); // Debug
+      }
+
+      console.log("formData prepared for submission:", formData);
+      // ✅ Debug: Log FormData contents
+      for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
       }
 
       await adminAPI.updateWatermarkSettings(formData);
-      toast.success('Watermark settings updated successfully');
-      
-      setWatermarkImage(null);
-      fetchSettings();
 
+      toast.success("Watermark settings updated successfully");
+
+      setWatermarkImage(null);
+      await fetchSettings();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to update watermark settings');
-      console.error(error);
+      toast.error(
+        error.response?.data?.message || "Failed to update watermark settings"
+      );
+      console.error("Watermark update error:", error);
     } finally {
       setSaving(false);
     }
   };
-
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
+
+    console.log("File selected:", file); // ✅ Debug log
+
     if (file) {
-      if (!file.type.startsWith('image/')) {
-        toast.error('Please select an image file');
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select an image file");
         return;
       }
       if (file.size > 5 * 1024 * 1024) {
-        toast.error('Image size should be less than 5MB');
+        toast.error("Image size should be less than 5MB");
         return;
       }
-      setWatermarkImage(file);
+
+      setSettings({ ...settings, type: "image", watermarkImage: file });
+
+      setWatermarkImage(file); // ✅ This should be a File object
+      console.log("File set to state:", file); // ✅ Debug log
     }
   };
-
   const handleRemoveImage = () => {
     setWatermarkImage(null);
-    const fileInput = document.getElementById('watermark-file-input');
-    if (fileInput) fileInput.value = '';
+    const fileInput = document.getElementById("watermark-file-input");
+    if (fileInput) fileInput.value = "";
   };
+
+  console.log("Current watermark:", watermarkImage);
 
   if (loading) {
     return (
@@ -359,7 +163,10 @@ const WatermarkSettings = () => {
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">Watermark Settings</h2>
-        <button onClick={fetchSettings} className="text-blue-600 hover:text-blue-700">
+        <button
+          onClick={fetchSettings}
+          className="text-blue-600 hover:text-blue-700"
+        >
           <RefreshCw className="w-5 h-5" />
         </button>
       </div>
@@ -367,12 +174,14 @@ const WatermarkSettings = () => {
       <div className="space-y-6">
         {/* Watermark Type */}
         <div>
-          <label className="block text-sm font-medium mb-2">Watermark Type</label>
+          <label className="block text-sm font-medium mb-2">
+            Watermark Type
+          </label>
           <select
             value={settings.type}
             onChange={(e) => {
               setSettings({ ...settings, type: e.target.value });
-              if (e.target.value === 'text') {
+              if (e.target.value === "text") {
                 setWatermarkImage(null);
               }
             }}
@@ -384,15 +193,19 @@ const WatermarkSettings = () => {
         </div>
 
         {/* Text Settings */}
-        {settings.type === 'text' && (
+        {settings.type === "text" && (
           <>
             {/* Watermark Text */}
             <div>
-              <label className="block text-sm font-medium mb-2">Watermark Text</label>
+              <label className="block text-sm font-medium mb-2">
+                Watermark Text
+              </label>
               <input
                 type="text"
                 value={settings.text}
-                onChange={(e) => setSettings({ ...settings, text: e.target.value })}
+                onChange={(e) =>
+                  setSettings({ ...settings, text: e.target.value })
+                }
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="© BodyCureHealth Travel"
               />
@@ -400,16 +213,20 @@ const WatermarkSettings = () => {
 
             {/* ✅ Font Family Selector */}
             <div>
-              <label className="block text-sm font-medium mb-2">Font Family</label>
+              <label className="block text-sm font-medium mb-2">
+                Font Family
+              </label>
               <select
                 value={settings.fontFamily}
-                onChange={(e) => setSettings({ ...settings, fontFamily: e.target.value })}
+                onChange={(e) =>
+                  setSettings({ ...settings, fontFamily: e.target.value })
+                }
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 style={{ fontFamily: settings.fontFamily }}
               >
                 {fontFamilies.map((font) => (
-                  <option 
-                    key={font.value} 
+                  <option
+                    key={font.value}
                     value={font.value}
                     style={{ fontFamily: font.value }}
                   >
@@ -429,7 +246,9 @@ const WatermarkSettings = () => {
                 min="10"
                 max="100"
                 value={settings.fontSize}
-                onChange={(e) => setSettings({ ...settings, fontSize: Number(e.target.value) })}
+                onChange={(e) =>
+                  setSettings({ ...settings, fontSize: Number(e.target.value) })
+                }
                 className="w-full"
               />
             </div>
@@ -441,13 +260,17 @@ const WatermarkSettings = () => {
                 <input
                   type="color"
                   value={settings.color}
-                  onChange={(e) => setSettings({ ...settings, color: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, color: e.target.value })
+                  }
                   className="h-10 w-20 rounded cursor-pointer"
                 />
                 <input
                   type="text"
                   value={settings.color}
-                  onChange={(e) => setSettings({ ...settings, color: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, color: e.target.value })
+                  }
                   className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                   placeholder="#FFFFFF"
                 />
@@ -457,10 +280,12 @@ const WatermarkSettings = () => {
         )}
 
         {/* Image Upload */}
-        {settings.type === 'image' && (
+        {settings.type === "image" && (
           <div>
-            <label className="block text-sm font-medium mb-2">Watermark Image</label>
-            
+            <label className="block text-sm font-medium mb-2">
+              Watermark Image
+            </label>
+
             <div className="flex items-center space-x-4">
               <label
                 htmlFor="watermark-file-input"
@@ -526,7 +351,9 @@ const WatermarkSettings = () => {
           </label>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Horizontal (X)</label>
+              <label className="block text-xs text-gray-600 mb-1">
+                Horizontal (X)
+              </label>
               <input
                 type="range"
                 min="0"
@@ -535,14 +362,19 @@ const WatermarkSettings = () => {
                 onChange={(e) =>
                   setSettings({
                     ...settings,
-                    position: { ...settings.position, x: Number(e.target.value) }
+                    position: {
+                      ...settings.position,
+                      x: Number(e.target.value),
+                    },
                   })
                 }
                 className="w-full"
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Vertical (Y)</label>
+              <label className="block text-xs text-gray-600 mb-1">
+                Vertical (Y)
+              </label>
               <input
                 type="range"
                 min="0"
@@ -551,7 +383,10 @@ const WatermarkSettings = () => {
                 onChange={(e) =>
                   setSettings({
                     ...settings,
-                    position: { ...settings.position, y: Number(e.target.value) }
+                    position: {
+                      ...settings.position,
+                      y: Number(e.target.value),
+                    },
                   })
                 }
                 className="w-full"
@@ -571,7 +406,9 @@ const WatermarkSettings = () => {
             max="1"
             step="0.1"
             value={settings.opacity}
-            onChange={(e) => setSettings({ ...settings, opacity: Number(e.target.value) })}
+            onChange={(e) =>
+              setSettings({ ...settings, opacity: Number(e.target.value) })
+            }
             className="w-full"
           />
         </div>
@@ -583,41 +420,47 @@ const WatermarkSettings = () => {
             <div className="text-gray-400 text-center text-sm">
               Sample Photo Background
             </div>
-            
-            {settings.type === 'text' ? (
+
+            {/* ✅ Show image watermark if type is image AND image exists */}
+            {settings.type === "image" &&
+            (watermarkImage || existingImageUrl) ? (
+              <img
+                src={
+                  watermarkImage instanceof File
+                    ? URL.createObjectURL(watermarkImage)
+                    : existingImageUrl
+                }
+                alt="watermark preview"
+                className="absolute max-w-24 max-h-24 object-contain"
+                style={{
+                  left: `${settings.position.x}%`,
+                  top: `${settings.position.y}%`,
+                  transform: "translate(-50%, -50%)",
+                  opacity: settings.opacity,
+                }}
+              />
+            ) : settings.type === "text" ? (
+              /* ✅ Show text watermark if type is text */
               <div
                 className="absolute font-bold"
                 style={{
                   left: `${settings.position.x}%`,
                   top: `${settings.position.y}%`,
-                  transform: 'translate(-50%, -50%)',
-                  fontFamily: settings.fontFamily, // ✅ Apply fontFamily
+                  transform: "translate(-50%, -50%)",
+                  fontFamily: settings.fontFamily,
                   fontSize: `${settings.fontSize}px`,
                   color: settings.color,
                   opacity: settings.opacity,
-                  textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
+                  textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
                 }}
               >
-                {settings.text || 'Sample Text'}
+                {settings.text || "Sample Text"}
               </div>
             ) : (
-              (watermarkImage || existingImageUrl) && (
-                <img
-                  src={
-                    watermarkImage instanceof File
-                      ? URL.createObjectURL(watermarkImage)
-                      : existingImageUrl
-                  }
-                  alt="watermark preview"
-                  className="absolute max-w-24 max-h-24 object-contain"
-                  style={{
-                    left: `${settings.position.x}%`,
-                    top: `${settings.position.y}%`,
-                    transform: 'translate(-50%, -50%)',
-                    opacity: settings.opacity
-                  }}
-                />
-              )
+              /* ✅ Show warning if image type but no image */
+              <div className="absolute text-red-500 text-sm font-medium">
+                No watermark image selected
+              </div>
             )}
           </div>
         </div>
@@ -625,11 +468,14 @@ const WatermarkSettings = () => {
         {/* Save Button */}
         <button
           onClick={handleSave}
-          disabled={saving || (settings.type === 'image' && !watermarkImage && !existingImageUrl)}
+          disabled={
+            saving ||
+            (settings.type === "image" && !watermarkImage && !existingImageUrl)
+          }
           className="w-full bg-blue-600 text-white py-3 rounded-lg flex justify-center items-center gap-2 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Save className="w-5 h-5" />
-          {saving ? 'Saving...' : 'Save Settings'}
+          {saving ? "Saving..." : "Save Settings"}
         </button>
       </div>
     </div>
