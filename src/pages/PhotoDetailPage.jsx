@@ -84,7 +84,7 @@ const PhotoDetailPage = () => {
   }
 
   const isOwner = user && photo.userId._id === user._id;
-  const imageUrl = photo.watermarkedUrl || photo.originalUrl || "/placeholder-image.png";
+  const imageUrl = photo.originalUrl|| photo.watermarkedUrl ||  "/placeholder-image.png";
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
