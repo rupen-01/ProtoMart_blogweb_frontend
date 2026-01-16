@@ -1,9 +1,11 @@
+// Update your PlaceDetailPage.jsx
+
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { placesAPI } from "../api/places.api";
 import { MapPin, Image as ImageIcon, ArrowLeft, Upload } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import PhotoGrid from "../components/photos/PhotoGrid";
+import { PhotoGallery } from "../components/admin/PhotoGallery";
 import toast from "react-hot-toast";
 
 const PlaceDetailPage = () => {
@@ -16,6 +18,7 @@ const PlaceDetailPage = () => {
   const [photosLoading, setPhotosLoading] = useState(true);
   const [blogs, setBlogs] = useState([]);
   const [blogsLoading, setBlogsLoading] = useState(true);
+
   useEffect(() => {
     fetchPlace();
     fetchPlacePhotos();
@@ -34,6 +37,7 @@ const PlaceDetailPage = () => {
       setLoading(false);
     }
   };
+
   const handleBlogClick = (blogId) => {
     navigate(`/blogs/${blogId}`);
   };
@@ -43,7 +47,7 @@ const PlaceDetailPage = () => {
       setPhotosLoading(true);
       const response = await placesAPI.getPlacePhotos(id, {
         page: 1,
-        limit: 20,
+        limit: 100, // Increased to show more photos
       });
       setPhotos(response.data);
     } catch (error) {
@@ -52,6 +56,7 @@ const PlaceDetailPage = () => {
       setPhotosLoading(false);
     }
   };
+
   const fetchPlaceBlogs = async () => {
     try {
       setBlogsLoading(true);
@@ -66,6 +71,7 @@ const PlaceDetailPage = () => {
       setBlogsLoading(false);
     }
   };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -113,7 +119,7 @@ const PlaceDetailPage = () => {
               <div className="flex items-center">
                 <ImageIcon className="w-5 h-5 text-blue-600 mr-2" />
                 <span className="text-2xl font-bold text-blue-600">
-                  {place.photoCount + 1}
+                  {photos.length}
                 </span>
                 <span className="text-gray-600 ml-2">Photos</span>
               </div>
@@ -161,10 +167,10 @@ const PlaceDetailPage = () => {
         </div>
       </div>
 
-      {/* Photos Grid */}
+      {/* Photos Gallery - UPDATED */}
       <div className="max-w-7xl mx-auto px-4 pb-12">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold mb-6">Photos from {place.name}</h2>
+          <h2 className="text-2xl font-bold">Photos from {place.name}</h2>
           <button
             onClick={() =>
               navigate("/upload", {
@@ -180,19 +186,26 @@ const PlaceDetailPage = () => {
                 },
               })
             }
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-green-700 flex items-center"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
           >
             <Upload className="w-5 h-5 mr-2" />
             <span>Upload Photo</span>
           </button>
         </div>
-        <PhotoGrid photos={photos} loading={photosLoading} />
+
+        {photosLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        ) : (
+          <PhotoGallery photos={photos} tileSize="medium" />
+        )}
       </div>
+
       {/* Blogs Section */}
       <div className="max-w-7xl mx-auto px-4 pb-12">
-        <div className="flex items-center justify-between ">
-          <h2 className="text-2xl font-bold mb-6">Blogs about {place.name}</h2>
-
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold">Blogs about {place.name}</h2>
           <button
             onClick={() =>
               navigate("/blogs/write", {
@@ -207,7 +220,7 @@ const PlaceDetailPage = () => {
                 },
               })
             }
-            className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
           >
             <span>Write Blog</span>
           </button>
