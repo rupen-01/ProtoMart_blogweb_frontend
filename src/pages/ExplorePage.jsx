@@ -598,7 +598,7 @@ const PhotoCard = ({ photo }) => {
         {showDetails && (
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-3 text-white">
             {/* Location Info */}
-            <div className="space-y-1.5 mb-2">
+            {/* <div className="space-y-1.5 mb-2">
               {photo.placeName && (
                 <div className="flex items-start gap-1.5">
                   <MapPinIcon size={14} className="mt-0.5 flex-shrink-0" />
@@ -622,7 +622,7 @@ const PhotoCard = ({ photo }) => {
                   <span>{formatDate(photo.createdAt)}</span>
                 </div>
               )}
-            </div>
+            </div> */}
 
             {/* Action Button */}
             <button
