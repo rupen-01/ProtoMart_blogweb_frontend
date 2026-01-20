@@ -21,6 +21,10 @@ const PhotoUpload = ({ onUploadSuccess }) => {
   const [newPlaceName, setNewPlaceName] = useState("");
   const [coordinates, setCoordinates] = useState(null);
 
+  const [googleLink, setGoogleLink] = useState("");
+  const [googleSyncing, setGoogleSyncing] = useState(false);
+  const [googleSyncResult, setGoogleSyncResult] = useState(null);
+
   const fileInputRef = useRef(null);
 
   // 🔹 Load existing places
@@ -139,6 +143,39 @@ const PhotoUpload = ({ onUploadSuccess }) => {
       toast.error("Upload failed");
     } finally {
       setUploading(false);
+    }
+  };
+  const handleValidateGoogleLink = async () => {
+    if (!googleLink) return toast.error("Enter Google Photos share link");
+
+    try {
+      const res = await axios.post("/api/google-photos/validate-link", {
+        shareLink: googleLink,
+      });
+
+      toast.success(`Album detected: ${res.data.data.title}`);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Invalid link");
+    }
+  };
+
+  const handleGoogleSync = async () => {
+    if (!googleLink) return toast.error("Enter Google Photos share link");
+    if (!coordinates) return toast.error("Select or add a place");
+
+    try {
+      setGoogleSyncing(true);
+
+      const res = await axios.post("/api/google-photos/sync", {
+        shareLink: googleLink,
+      });
+
+      setGoogleSyncResult(res.data.data);
+      toast.success("Google Photos sync started");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Sync failed");
+    } finally {
+      setGoogleSyncing(false);
     }
   };
 
@@ -262,6 +299,46 @@ const PhotoUpload = ({ onUploadSuccess }) => {
             </button>
           </div>
         ))}
+      </div>
+      {/* GOOGLE PHOTOS IMPORT */}
+      <div className="mt-8 border-t pt-6">
+        <h3 className="text-lg font-semibold mb-2">
+          Import from Google Photos
+        </h3>
+
+        <input
+          type="text"
+          value={googleLink}
+          onChange={(e) => setGoogleLink(e.target.value)}
+          placeholder="Paste Google Photos shared album link"
+          className="w-full border rounded p-2 mb-3"
+        />
+
+        <div className="flex gap-3">
+          <button
+            onClick={handleValidateGoogleLink}
+            className="border px-4 py-2 rounded"
+          >
+            Validate Link
+          </button>
+
+          <button
+            onClick={handleGoogleSync}
+            disabled={googleSyncing}
+            className="bg-green-600 text-white px-4 py-2 rounded"
+          >
+            {googleSyncing ? "Syncing..." : "Import Photos"}
+          </button>
+        </div>
+
+        {googleSyncResult && (
+          <div className="mt-4 text-sm text-gray-700">
+            <p>Total: {googleSyncResult.total}</p>
+            <p>Uploaded: {googleSyncResult.uploaded}</p>
+            <p>Skipped: {googleSyncResult.skipped}</p>
+            <p>Failed: {googleSyncResult.failed}</p>
+          </div>
+        )}
       </div>
 
       <button
