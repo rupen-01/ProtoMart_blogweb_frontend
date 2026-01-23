@@ -564,7 +564,7 @@ const PhotoCard = ({ photo }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const imageUrl =
-    photo.thumbnailUrl || photo.watermarkedUrl || photo.originalUrl;
+    photo.originalUrl || photo.thumbnailUrl || photo.watermarkedUrl;
   const fullImageUrl = photo.originalUrl || photo.watermarkedUrl;
 
   const formatDate = (date) => {

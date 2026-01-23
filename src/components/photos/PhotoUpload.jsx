@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Upload, X, MapPin } from "lucide-react";
 import { photosAPI } from "../../api/photos.api";
 import { placesAPI } from "../../api/places.api";
+import { googlePhotosAPI } from "../../api/googlePhotos.api"; // ✅ ADD THIS
 import toast from "react-hot-toast";
 import axios from "axios";
 
@@ -145,39 +146,48 @@ const PhotoUpload = ({ onUploadSuccess }) => {
       setUploading(false);
     }
   };
+
+  // ✅ FIXED: Use googlePhotosAPI instead of raw axios
   const handleValidateGoogleLink = async () => {
     if (!googleLink) return toast.error("Enter Google Photos share link");
 
     try {
-      const res = await axios.post("/api/google-photos/validate-link", {
-        shareLink: googleLink,
-      });
-
-      toast.success(`Album detected: ${res.data.data.title}`);
+      const res = await googlePhotosAPI.validateLink(googleLink);
+      toast.success(`Album detected: ${res.data.title}`);
     } catch (err) {
-      toast.error(err.response?.data?.message || "Invalid link");
+      toast.error(err.message || "Invalid link");
     }
   };
 
-  const handleGoogleSync = async () => {
-    if (!googleLink) return toast.error("Enter Google Photos share link");
-    if (!coordinates) return toast.error("Select or add a place");
+const handleGoogleSync = async () => {
+  if (!googleLink) return toast.error("Enter Google Photos share link");
+  if (!coordinates) return toast.error("Select or add a place");
 
-    try {
-      setGoogleSyncing(true);
+  try {
+    setGoogleSyncing(true);
 
-      const res = await axios.post("/api/google-photos/sync", {
-        shareLink: googleLink,
-      });
+    // ✅ Pass coordinates and placeId to backend
+    const res = await googlePhotosAPI.syncPhotos({
+      shareLink: googleLink,
+      latitude: coordinates.latitude,
+      longitude: coordinates.longitude,
+      placeId: selectedPlaceId || undefined // Send placeId if available
+    });
 
-      setGoogleSyncResult(res.data.data);
-      toast.success("Google Photos sync started");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Sync failed");
-    } finally {
-      setGoogleSyncing(false);
+    setGoogleSyncResult(res.data);
+    toast.success("Google Photos sync completed");
+    
+    setGoogleLink("");
+    
+    if (onUploadSuccess) {
+      onUploadSuccess(res.data);
     }
-  };
+  } catch (err) {
+    toast.error(err.message || "Sync failed");
+  } finally {
+    setGoogleSyncing(false);
+  }
+};
 
   return (
     <div className="max-w-3xl mx-auto ">
@@ -300,6 +310,7 @@ const PhotoUpload = ({ onUploadSuccess }) => {
           </div>
         ))}
       </div>
+      
       {/* GOOGLE PHOTOS IMPORT */}
       <div className="mt-8 border-t pt-6">
         <h3 className="text-lg font-semibold mb-2">
@@ -317,34 +328,38 @@ const PhotoUpload = ({ onUploadSuccess }) => {
         <div className="flex gap-3">
           <button
             onClick={handleValidateGoogleLink}
-            className="border px-4 py-2 rounded"
+            disabled={!googleLink}
+            className="border px-4 py-2 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Validate Link
           </button>
 
           <button
             onClick={handleGoogleSync}
-            disabled={googleSyncing}
-            className="bg-green-600 text-white px-4 py-2 rounded"
+            disabled={googleSyncing || !googleLink}
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {googleSyncing ? "Syncing..." : "Import Photos"}
           </button>
         </div>
 
         {googleSyncResult && (
-          <div className="mt-4 text-sm text-gray-700">
-            <p>Total: {googleSyncResult.total}</p>
-            <p>Uploaded: {googleSyncResult.uploaded}</p>
-            <p>Skipped: {googleSyncResult.skipped}</p>
-            <p>Failed: {googleSyncResult.failed}</p>
+          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <h4 className="font-semibold mb-2">Sync Results</h4>
+            <div className="text-sm text-gray-700 space-y-1">
+              <p>✅ Total: {googleSyncResult.total}</p>
+              <p>📤 Uploaded: {googleSyncResult.uploaded}</p>
+              <p>⏭️ Skipped: {googleSyncResult.skipped}</p>
+              <p>❌ Failed: {googleSyncResult.failed}</p>
+            </div>
           </div>
         )}
       </div>
 
       <button
         onClick={handleUpload}
-        disabled={uploading}
-        className="mt-6 w-full bg-blue-600 text-white py-3 rounded"
+        disabled={uploading || files.length === 0}
+        className="mt-6 w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {uploading ? "Uploading..." : "Upload Files"}
       </button>

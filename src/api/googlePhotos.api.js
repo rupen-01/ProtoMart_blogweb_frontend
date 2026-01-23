@@ -7,9 +7,9 @@ export const googlePhotosAPI = {
   },
 
   // Sync photos from album
-  syncPhotos: async (shareLink) => {
-    return axiosInstance.post('/google-photos/sync', { shareLink });
-  },
+ syncPhotos: async (data) => {
+  return axiosInstance.post('/google-photos/sync', data);
+},
 
   // Get sync status
   getSyncStatus: async () => {
