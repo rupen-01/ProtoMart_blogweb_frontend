@@ -1,18 +1,19 @@
 import axiosInstance from './axios';
 
 export const googlePhotosAPI = {
-  // Validate album link
   validateLink: async (shareLink) => {
-    return axiosInstance.post('/google-photos/validate-link', { shareLink });
+    return axiosInstance.post("/google-photos/validate-link", { shareLink });
   },
 
-  // Sync photos from album
- syncPhotos: async (data) => {
-  return axiosInstance.post('/google-photos/sync', data);
-},
+  syncPhotos: async (data) => {
+    return axiosInstance.post("/google-photos/sync", data);
+  },
 
-  // Get sync status
+  getSyncProgress: async (jobId) => {
+    return axiosInstance.get(`/google-photos/progress/${jobId}`);
+  },
+
   getSyncStatus: async () => {
-    return axiosInstance.get('/google-photos/sync-status');
-  }
+    return axiosInstance.get("/google-photos/sync-status");
+  },
 };
