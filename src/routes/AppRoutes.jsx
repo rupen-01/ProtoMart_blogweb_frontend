@@ -28,6 +28,8 @@ import MapPage from '../pages/MapPage';
 import MyPhotosPage from '../pages/MyPhotosPage';
 import GoogleAuthSuccess from '../pages/GoogleAuthSuccess';
 import BlogDetailPage from "../components/blogs/BlogDetail";
+import PrivacyPolicyPage from "../pages/PrivacyPolicyPage";
+import TermsOfServicePage from "../pages/TermsOfServicePage";
 
 
 const AppRoutes = () => {
@@ -47,6 +49,8 @@ const AppRoutes = () => {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/file-explorer" element={<ExplorePage />} />
           <Route path="/map" element={<MapPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms-of-service" element={<TermsOfServicePage />} />
           <Route path="/places/:id" element={<PlaceDetailPage />} />
           <Route path="/photos/:id" element={<PhotoDetailPage />} />
           <Route path="/blogs" element={<BlogsPage />} />
